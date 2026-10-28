@@ -1,0 +1,30 @@
+name: Angebote suchen
+
+on:
+  schedule:
+    - cron: "0 7,17 * * *"   # UTC -> 8:00 und 18:00 Uhr Winterzeit (Sommer 9:00/19:00)
+  workflow_dispatch:          # "Run workflow"-Knopf zum manuellen Starten
+
+permissions:
+  contents: write
+
+concurrency: suche
+
+jobs:
+  suchen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests beautifulsoup4
+      - run: python sammeln.py
+      - name: Ergebnisse speichern
+        run: |
+          git config user.name "autosuche-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add daten.json modelle.json
+          git diff --staged --quiet || git commit -m "Angebote aktualisiert"
+          git push
