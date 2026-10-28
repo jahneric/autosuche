@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Autosuche</title>
+<meta name="description" content="Gebrauchte Hochdachkombis und VW-Busse von AutoScout24 und Kleinanzeigen, 2× täglich aktualisiert.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚐</text></svg>">
+<style>
+  :root { --bg:#f5f4f0; --karte:#fff; --text:#1d1d1b; --leise:#6b6b66; --linie:#e2e0d9; --akzent:#1f6f5c; --akzent-hell:#e3f1ec; --neu:#d9480f; --gut:#2b8a3e; --auf-akzent:#fff; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#161715; --karte:#222320; --text:#ecebe6; --leise:#a09f98; --linie:#363732; --akzent:#5cc1a3; --akzent-hell:#1e332d; --neu:#ff8a50; --gut:#69db7c; --auf-akzent:#10201b; } }
+  * { box-sizing:border-box; }
+  body { margin:0; font:15px/1.45 system-ui, "Segoe UI", sans-serif; background:var(--bg); color:var(--text); }
+  a { color:var(--akzent); }
+  header { display:flex; align-items:center; gap:14px; padding:12px 16px; border-bottom:1px solid var(--linie); background:var(--karte); position:sticky; top:0; z-index:5; }
+  header b { font-size:18px; }
+  .leise { color:var(--leise); }
+  .klein { font-size:13px; }
+  .btn { display:inline-flex; align-items:center; gap:6px; border:1px solid var(--linie); background:var(--karte); color:var(--text); padding:7px 13px; border-radius:8px; cursor:pointer; font:inherit; text-decoration:none; white-space:nowrap; }
+  .btn:hover { border-color:var(--akzent); }
+  .btn.primaer { background:var(--akzent); border-color:var(--akzent); color:var(--auf-akzent); }
+  .btn.mini { padding:3px 9px; font-size:13px; }
+  input, select { font:inherit; padding:7px 9px; border:1px solid var(--linie); border-radius:7px; background:var(--karte); color:var(--text); width:100%; min-width:0; }
+  input[type=checkbox] { width:auto; accent-color:var(--akzent); }
+  .layout { display:grid; grid-template-columns:300px 1fr; gap:20px; max-width:1400px; margin:0 auto; padding:18px 16px 60px; }
+  aside { position:sticky; top:70px; align-self:start; max-height:calc(100vh - 86px); overflow:auto; background:var(--karte); border:1px solid var(--linie); border-radius:12px; padding:14px; }
+  aside h3 { margin:16px 0 8px; font-size:14px; text-transform:uppercase; letter-spacing:.04em; color:var(--leise); }
+  aside h3:first-child { margin-top:0; }
+  details.klasse { border:1px solid var(--linie); border-radius:8px; padding:6px 10px; margin-bottom:6px; }
+  details.klasse summary { cursor:pointer; display:flex; gap:8px; align-items:center; font-weight:600; list-style:none; }
+  details.klasse summary::-webkit-details-marker { display:none; }
+  details.klasse summary .zahl { margin-left:auto; font-weight:400; }
+  .modell { display:flex; gap:8px; align-items:center; padding:3px 0 3px 4px; cursor:pointer; }
+  .paar { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  label.feld { display:flex; flex-direction:column; gap:3px; font-size:13px; color:var(--leise); margin-bottom:8px; }
+  label.haken { display:flex; gap:8px; align-items:center; margin:5px 0; cursor:pointer; font-size:14px; }
+  .leiste { display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:12px; }
+  .tabs { display:flex; gap:4px; flex-wrap:wrap; }
+  .tabs button { border:none; background:none; font:inherit; padding:6px 12px; border-radius:20px; color:var(--leise); cursor:pointer; }
+  .tabs button.an { background:var(--akzent-hell); color:var(--akzent); font-weight:600; }
+  .rechts { margin-left:auto; }
+  .raster { display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:14px; }
+  .karte { background:var(--karte); border:1px solid var(--linie); border-radius:12px; overflow:hidden; display:flex; flex-direction:column; position:relative; }
+  .karte img { width:100%; aspect-ratio:4/3; object-fit:cover; background:var(--linie); display:block; }
+  .inhalt { padding:11px 13px; flex:1; display:flex; flex-direction:column; gap:5px; }
+  .titel { font-weight:600; text-decoration:none; color:var(--text); display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .preis { font-size:20px; font-weight:700; }
+  .preis s { font-size:14px; color:var(--leise); font-weight:400; margin-left:6px; }
+  .daten { display:flex; flex-wrap:wrap; gap:3px 11px; font-size:13.5px; color:var(--leise); }
+  .badge { position:absolute; top:10px; left:10px; background:var(--neu); color:#fff; font-size:12px; font-weight:700; padding:2px 8px; border-radius:20px; }
+  .quelle { position:absolute; top:10px; right:10px; background:rgba(0,0,0,.65); color:#fff; font-size:12px; padding:2px 8px; border-radius:20px; }
+  .bew { font-size:12.5px; font-weight:600; color:var(--gut); }
+  .aktionen { display:flex; gap:6px; padding:0 13px 11px; align-items:center; }
+  .fav { font-size:19px; background:none; border:none; cursor:pointer; color:var(--leise); padding:0 4px; }
+  .fav.an { color:#f59f00; }
+  .leer { text-align:center; padding:60px 20px; background:var(--karte); border:1px solid var(--linie); border-radius:12px; }
+  .toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:var(--text); color:var(--bg); padding:10px 18px; border-radius:8px; opacity:0; transition:opacity .2s; pointer-events:none; z-index:20; }
+  .toast.an { opacity:1; }
+  #filterKnopf { display:none; }
+  @media (max-width: 820px) {
+    .layout { grid-template-columns:1fr; }
+    aside { display:none; position:static; max-height:none; }
+    aside.offen { display:block; }
+    #filterKnopf { display:inline-flex; }
+    header .stand { display:none; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <b>🚐 Autosuche</b>
+  <span class="leise klein stand" id="stand"></span>
+  <button class="btn rechts" id="filterKnopf">Filter</button>
+  <button class="btn primaer" id="teilen" title="Link mit deinen Filtern kopieren">Suche teilen</button>
+</header>
+
+<div class="layout">
+  <aside id="filter">
+    <h3>Fahrzeugklasse &amp; Modelle</h3>
+    <div id="klassen"></div>
+
+    <h3>Preis &amp; Zustand</h3>
+    <div class="paar">
+      <label class="feld">Preis von €<input data-f="preis_min" inputmode="numeric"></label>
+      <label class="feld">Preis bis €<input data-f="preis_max" inputmode="numeric"></label>
+      <label class="feld">km bis<input data-f="km_max" inputmode="numeric"></label>
+      <label class="feld">EZ ab Jahr<input data-f="ez_min" inputmode="numeric" placeholder="2012"></label>
+      <label class="feld">PS ab<input data-f="ps_min" inputmode="numeric"></label>
+      <label class="feld">Kraftstoff
+        <select data-f="kraftstoff"><option value="">egal</option><option>Benzin</option><option>Diesel</option><option>Elektro</option><option>Hybrid</option><option value="Autogas|LPG">Autogas</option><option value="Erdgas|CNG">Erdgas</option></select></label>
+    </div>
+    <label class="feld">Getriebe
+      <select data-f="getriebe"><option value="">egal</option><option>Schaltgetriebe</option><option>Automatik</option></select></label>
+
+    <h3>Ort</h3>
+    <div class="paar">
+      <label class="feld">Deine PLZ<input data-f="plz" inputmode="numeric" maxlength="5"></label>
+      <label class="feld">Umkreis km<input data-f="umkreis" inputmode="numeric" placeholder="ganz DE"></label>
+    </div>
+
+    <h3>Sonstiges</h3>
+    <label class="feld">Seite
+      <select data-f="quelle"><option value="">alle</option><option>AutoScout24</option><option>Kleinanzeigen</option></select></label>
+    <label class="haken"><input type="checkbox" data-f="nur_privat"> Nur Privatverkäufer</label>
+    <label class="haken"><input type="checkbox" data-f="kasten_aus"> Kastenwagen / Nutzfahrzeuge ausblenden</label>
+    <label class="haken"><input type="checkbox" data-f="ohne_km_ez"> Anzeigen ohne km/EZ-Angabe ausblenden</label>
+
+    <h3>mobile.de</h3>
+    <p class="leise klein" style="margin-top:0">Wird nicht automatisch durchsucht – hier mit deinen Filtern öffnen:</p>
+    <div id="mobile" style="display:flex; flex-wrap:wrap; gap:6px"></div>
+
+    <p style="margin-top:18px"><button class="btn mini" id="zuruecksetzen">Filter zurücksetzen</button></p>
+  </aside>
+
+  <main>
+    <div class="leiste">
+      <div class="tabs" id="tabs">
+        <button data-v="alle" class="an">Alle</button>
+        <button data-v="neu">Neu</button>
+        <button data-v="merk">★ Merkliste</button>
+        <button data-v="aus">Ausgeblendet</button>
+      </div>
+      <div class="rechts leiste" style="margin:0">
+        <select data-f="sort" style="width:auto">
+          <option value="">Neueste zuerst</option>
+          <option value="preis">Preis aufsteigend</option>
+          <option value="km">Kilometer aufsteigend</option>
+          <option value="ez">Baujahr: neueste</option>
+          <option value="drop">Größte Preissenkung</option>
+          <option value="naehe">Nächste zuerst (PLZ nötig)</option>
+        </select>
+        <button class="btn" id="gesehen">Alle als gesehen markieren</button>
+      </div>
+    </div>
+    <p class="leise" id="info" style="margin:0 0 14px"></p>
+    <div class="raster" id="raster"></div>
+    <p style="text-align:center; margin-top:20px"><button class="btn" id="mehr" hidden>Mehr anzeigen</button></p>
+  </main>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const STANDARD = { modelle: ["roomster","caddy","kangoo","berlingo"], preis_min:"", preis_max:"", km_max:"", ez_min:"", ps_min:"",
+  kraftstoff:"", getriebe:"", plz:"", umkreis:"", quelle:"", nur_privat:false, kasten_aus:false, ohne_km_ez:false, sort:"" };
+const SEITE = 60;
+const speicher = {
+  lies(k, std) { try { const v = localStorage.getItem("autosuche:" + k); return v ? JSON.parse(v) : std; } catch { return std; } },
+  schreib(k, v) { try { localStorage.setItem("autosuche:" + k, JSON.stringify(v)); } catch {} },
+};
+let F = { ...STANDARD, ...speicher.lies("filter", {}) };
+let merk = new Set(speicher.lies("merk", []));
+let aus = new Set(speicher.lies("aus", []));
+let gesehenBis = speicher.lies("gesehenBis", "");
+let ansicht = "alle", anzahl = SEITE, ANGEBOTE = [], KLASSEN = {}, PLZ = null;
+
+// geteilter Link: Filter stehen im #hash
+if (location.hash.length > 1) {
+  try { F = { ...STANDARD, ...JSON.parse(decodeURIComponent(atob(location.hash.slice(1)))) }; } catch {}
+  history.replaceState(null, "", location.pathname);
+}
+
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+const sicher = u => /^https:\/\//.test(u || "") ? u : "#";
+const tsd = n => n == null ? "?" : n.toLocaleString("de-DE");
+const zahl = v => parseInt(String(v).replace(/\D/g, "")) || 0;
+const $ = s => document.querySelector(s);
+function toast(t) { const e = $("#toast"); e.textContent = t; e.classList.add("an"); setTimeout(() => e.classList.remove("an"), 2200); }
+
+function entfernung(a, b) {
+  const r = Math.PI / 180, x = Math.sin((b[0]-a[0])*r/2)**2 + Math.cos(a[0]*r)*Math.cos(b[0]*r)*Math.sin((b[1]-a[1])*r/2)**2;
+  return 12742 * Math.asin(Math.sqrt(x));
+}
+
+function speichern() { speicher.schreib("filter", F); }
+
+function baueKlassen() {
+  const anzahlProModell = {};
+  ANGEBOTE.forEach(a => anzahlProModell[a.modell] = (anzahlProModell[a.modell] || 0) + 1);
+  $("#klassen").innerHTML = Object.entries(KLASSEN).map(([k, ms]) => {
+    const ids = Object.keys(ms), gewaehlt = ids.filter(i => F.modelle.includes(i)).length;
+    return `<details class="klasse" ${gewaehlt ? "open" : ""}>
+      <summary><input type="checkbox" data-klasse="${esc(k)}" ${gewaehlt === ids.length ? "checked" : ""}> ${esc(k)}
+        <span class="zahl leise klein">${gewaehlt ? gewaehlt + "/" + ids.length : ""}</span></summary>
+      ${Object.entries(ms).map(([id, m]) => `<label class="modell"><input type="checkbox" data-modell="${id}" ${F.modelle.includes(id) ? "checked" : ""}>
+        ${esc(m.name)} <span class="leise klein">${anzahlProModell[id] || 0}</span></label>`).join("")}
+    </details>`;
+  }).join("");
+  $("#klassen").querySelectorAll("[data-klasse]").forEach(c => {
+    c.addEventListener("click", e => e.stopPropagation());
+    c.addEventListener("change", () => {
+      const ids = Object.keys(KLASSEN[c.dataset.klasse]);
+      F.modelle = c.checked ? [...new Set([...F.modelle, ...ids])] : F.modelle.filter(i => !ids.includes(i));
+      speichern(); baueKlassen(); zeige();
+    });
+  });
+  $("#klassen").querySelectorAll("[data-modell]").forEach(c => c.addEventListener("change", () => {
+    F.modelle = c.checked ? [...F.modelle, c.dataset.modell] : F.modelle.filter(i => i !== c.dataset.modell);
+    speichern(); baueKlassen(); zeige();
+  }));
+}
+
+function baueMobile() {
+  const links = [];
+  for (const ms of Object.values(KLASSEN)) for (const [id, m] of Object.entries(ms)) {
+    if (!F.modelle.includes(id) || !m.mobile) continue;
+    const q = [`ms=${m.mobile[0]}%3B%3B%3B${encodeURIComponent(m.mobile[1])}`, "isSearchRequest=true", "s=Car", "vc=Car", "sb=doc", "od=down", "dam=false"];
+    if (F.preis_min || F.preis_max) q.push(`p=${zahl(F.preis_min) || ""}%3A${zahl(F.preis_max) || ""}`);
+    if (F.km_max) q.push(`ml=%3A${zahl(F.km_max)}`);
+    if (F.ez_min) q.push(`fr=${zahl(F.ez_min)}%3A`);
+    if (F.plz && F.umkreis) q.push(`zip=${zahl(F.plz)}`, `zipr=${zahl(F.umkreis)}`);
+    links.push(`<a class="btn mini" target="_blank" rel="noopener" href="https://suchen.mobile.de/fahrzeuge/search.html?${q.join("&")}">${esc(m.name)} ↗</a>`);
+  }
+  $("#mobile").innerHTML = links.join("") || '<span class="leise klein">Erst Modelle wählen.</span>';
+}
+
+function gefiltert() {
+  const pMin = zahl(F.preis_min), pMax = zahl(F.preis_max), kmMax = zahl(F.km_max), ezMin = zahl(F.ez_min), psMin = zahl(F.ps_min);
+  const umkreis = zahl(F.umkreis), heim = PLZ && PLZ[String(F.plz).padStart(5, "0")];
+  const kraft = F.kraftstoff ? new RegExp(F.kraftstoff, "i") : null;
+  const liste = [];
+  for (const a of ANGEBOTE) {
+    if (ansicht === "merk" ? !merk.has(a.id) : ansicht === "aus" ? !aus.has(a.id) : aus.has(a.id)) continue;
+    if (ansicht === "neu" && !(a.erstmals > gesehenBis)) continue;
+    if (ansicht !== "merk" && !F.modelle.includes(a.modell)) continue;
+    if (ansicht === "merk") { liste.push(a); continue; }
+    if (pMin && a.preis < pMin || pMax && a.preis > pMax) continue;
+    if (kmMax && a.km && a.km > kmMax) continue;
+    if (ezMin && a.ez_jahr && a.ez_jahr < ezMin) continue;
+    if (psMin && a.ps && a.ps < psMin) continue;
+    if (kraft && a.kraftstoff && !kraft.test(a.kraftstoff)) continue;
+    if (F.getriebe && a.getriebe && a.getriebe !== F.getriebe) continue;
+    if (F.quelle && a.quelle !== F.quelle) continue;
+    if (F.nur_privat && a.anbieter === "Händler") continue;
+    if (F.kasten_aus && /kasten|\bnfz\b|\blkw\b|pritsche|koffer/i.test(a.titel)) continue;
+    if (F.ohne_km_ez && (!a.km || !a.ez_jahr)) continue;
+    a.dist = null;
+    if (heim) {
+      const o = PLZ[(a.ort || "").slice(0, 5)];
+      if (o) a.dist = Math.round(entfernung(heim, o));
+    }
+    if (umkreis && heim && (a.dist == null || a.dist > umkreis)) continue;
+    liste.push(a);
+  }
+  const s = F.sort;
+  liste.sort(s === "preis" ? (a, b) => a.preis - b.preis
+    : s === "km" ? (a, b) => (a.km ?? 1e9) - (b.km ?? 1e9)
+    : s === "ez" ? (a, b) => (b.ez_jahr ?? 0) - (a.ez_jahr ?? 0)
+    : s === "drop" ? (a, b) => ((b.preis_vorher || b.preis) - b.preis) - ((a.preis_vorher || a.preis) - a.preis)
+    : s === "naehe" ? (a, b) => (a.dist ?? 1e9) - (b.dist ?? 1e9)
+    : (a, b) => b.erstmals.localeCompare(a.erstmals) || a.preis - b.preis);
+  return liste;
+}
+
+function karte(a) {
+  const istNeu = a.erstmals > gesehenBis;
+  return `<div class="karte" data-id="${esc(a.id)}">
+    <a href="${esc(sicher(a.url))}" target="_blank" rel="noopener"><img src="${esc(sicher(a.bild))}" loading="lazy" alt="" referrerpolicy="no-referrer" onerror="this.style.visibility='hidden'"></a>
+    ${istNeu && gesehenBis ? '<span class="badge">NEU</span>' : ""}
+    <span class="quelle">${esc(a.quelle)}</span>
+    <div class="inhalt">
+      <a class="titel" href="${esc(sicher(a.url))}" target="_blank" rel="noopener">${esc(a.titel)}</a>
+      <div class="preis">${tsd(a.preis)} €${a.preis_vorher && a.preis_vorher !== a.preis ? `<s>${tsd(a.preis_vorher)} €</s>` : ""}</div>
+      ${a.bewertung ? `<div class="bew">${esc(a.bewertung)}</div>` : ""}
+      <div class="daten"><span>${tsd(a.km)} km</span><span>EZ ${esc(a.ez || "?")}</span>
+        ${a.ps ? `<span>${a.ps} PS</span>` : ""}${a.kraftstoff ? `<span>${esc(a.kraftstoff)}</span>` : ""}${a.getriebe ? `<span>${esc(a.getriebe)}</span>` : ""}</div>
+      <div class="daten"><span>📍 ${esc(a.ort || "?")}${a.dist != null ? ` · ${a.dist} km` : ""}</span>${a.anbieter ? `<span>${esc(a.anbieter)}</span>` : ""}</div>
+      <div class="daten"><span>seit ${new Date(a.erstmals).toLocaleDateString("de-DE")}</span></div>
+    </div>
+    <div class="aktionen">
+      <button class="fav ${merk.has(a.id) ? "an" : ""}" data-akt="merk" title="Merken">★</button>
+      <button class="btn mini" data-akt="aus">${aus.has(a.id) ? "Wieder einblenden" : "Ausblenden"}</button>
+    </div>
+  </div>`;
+}
+
+function zeige() {
+  const liste = gefiltert();
+  $("#raster").innerHTML = liste.slice(0, anzahl).map(karte).join("")
+    || `<div class="leer" style="grid-column:1/-1">${ansicht === "neu" ? "Nichts Neues seit deinem letzten Besuch." : ansicht === "merk" ? "Noch nichts gemerkt – klick auf ★ bei einem Angebot." : "Keine Angebote mit diesen Filtern."}</div>`;
+  $("#mehr").hidden = liste.length <= anzahl;
+  const neuZahl = ANGEBOTE.filter(a => a.erstmals > gesehenBis && F.modelle.includes(a.modell) && !aus.has(a.id)).length;
+  $("#tabs [data-v=neu]").textContent = gesehenBis && neuZahl ? `Neu (${neuZahl})` : "Neu";
+  $("#tabs [data-v=merk]").textContent = merk.size ? `★ Merkliste (${merk.size})` : "★ Merkliste";
+  $("#info").textContent = `${tsd(liste.length)} Angebote` + (F.plz && !PLZ?.[String(F.plz).padStart(5, "0")] && F.plz.length === 5 ? " · PLZ unbekannt" : "");
+  baueMobile();
+}
+
+function felderSetzen() {
+  document.querySelectorAll("[data-f]").forEach(el => {
+    if (el.type === "checkbox") el.checked = !!F[el.dataset.f]; else el.value = F[el.dataset.f] ?? "";
+  });
+}
+
+document.querySelectorAll("[data-f]").forEach(el => el.addEventListener(el.tagName === "INPUT" && el.type !== "checkbox" ? "input" : "change", () => {
+  F[el.dataset.f] = el.type === "checkbox" ? el.checked : el.value;
+  anzahl = SEITE; speichern(); zeige();
+}));
+$("#tabs").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  ansicht = b.dataset.v; anzahl = SEITE;
+  $("#tabs").querySelectorAll("button").forEach(x => x.classList.toggle("an", x === b));
+  zeige();
+});
+$("#raster").addEventListener("click", e => {
+  const b = e.target.closest("[data-akt]"); if (!b) return;
+  const id = b.closest(".karte").dataset.id, set = b.dataset.akt === "merk" ? merk : aus;
+  set.has(id) ? set.delete(id) : set.add(id);
+  speicher.schreib(b.dataset.akt, [...set]);
+  if (b.dataset.akt === "merk" && ansicht !== "merk") { b.classList.toggle("an"); zeige(); } else zeige();
+});
+$("#mehr").addEventListener("click", () => { anzahl += SEITE; zeige(); });
+$("#gesehen").addEventListener("click", () => {
+  gesehenBis = ANGEBOTE.reduce((m, a) => a.erstmals > m ? a.erstmals : m, gesehenBis || "");
+  speicher.schreib("gesehenBis", gesehenBis); zeige(); toast("Alles als gesehen markiert");
+});
+$("#zuruecksetzen").addEventListener("click", () => { F = { ...STANDARD }; speichern(); felderSetzen(); baueKlassen(); zeige(); });
+$("#filterKnopf").addEventListener("click", () => $("#filter").classList.toggle("offen"));
+$("#teilen").addEventListener("click", async () => {
+  const url = location.origin + location.pathname + "#" + btoa(encodeURIComponent(JSON.stringify(F)));
+  try { await navigator.clipboard.writeText(url); toast("Link mit deinen Filtern kopiert"); }
+  catch { prompt("Link kopieren:", url); }
+});
+
+(async () => {
+  felderSetzen();
+  $("#raster").innerHTML = '<div class="leer" style="grid-column:1/-1">Lade Angebote …</div>';
+  try {
+    const [d, k] = await Promise.all([fetch("daten.json", { cache: "no-cache" }).then(r => r.json()), fetch("modelle.json").then(r => r.json())]);
+    KLASSEN = k;
+    ANGEBOTE = Object.entries(d.angebote).map(([id, a]) => ({ id, ...a }));
+    $("#stand").textContent = `Stand ${new Date(d.stand).toLocaleString("de-DE", { dateStyle: "short", timeStyle: "short" })} · ${tsd(ANGEBOTE.length)} Angebote`;
+    if (!gesehenBis) { gesehenBis = d.stand; speicher.schreib("gesehenBis", gesehenBis); } // erster Besuch: nichts ist "neu"
+    baueKlassen(); zeige();
+  } catch (e) {
+    $("#raster").innerHTML = '<div class="leer" style="grid-column:1/-1">Angebote konnten nicht geladen werden.</div>';
+  }
+  fetch("plz.json").then(r => r.json()).then(p => { PLZ = p; zeige(); }).catch(() => {});
+})();
+</script>
+</body>
+</html>

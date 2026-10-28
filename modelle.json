@@ -1,0 +1,196 @@
+{
+ "Hochdachkombi": {
+  "roomster": {
+   "name": "Skoda Roomster",
+   "mobile": [
+    22900,
+    "roomster"
+   ]
+  },
+  "caddy": {
+   "name": "VW Caddy",
+   "mobile": [
+    25200,
+    "caddy"
+   ]
+  },
+  "kangoo": {
+   "name": "Renault Kangoo",
+   "mobile": [
+    20700,
+    "kangoo"
+   ]
+  },
+  "berlingo": {
+   "name": "Citroën Berlingo",
+   "mobile": [
+    5900,
+    "berlingo"
+   ]
+  },
+  "partner": {
+   "name": "Peugeot Partner",
+   "mobile": [
+    19300,
+    "partner"
+   ]
+  },
+  "rifter": {
+   "name": "Peugeot Rifter",
+   "mobile": [
+    19300,
+    "rifter"
+   ]
+  },
+  "combo": {
+   "name": "Opel Combo",
+   "mobile": [
+    19000,
+    "combo"
+   ]
+  },
+  "tourneo_connect": {
+   "name": "Ford Tourneo Connect",
+   "mobile": [
+    9000,
+    "tourneo connect"
+   ]
+  },
+  "doblo": {
+   "name": "Fiat Doblò",
+   "mobile": [
+    8800,
+    "doblo"
+   ]
+  },
+  "citan": {
+   "name": "Mercedes Citan",
+   "mobile": [
+    17200,
+    "citan"
+   ]
+  },
+  "proace_city": {
+   "name": "Toyota Proace City",
+   "mobile": [
+    24100,
+    "proace city"
+   ]
+  },
+  "dokker": {
+   "name": "Dacia Dokker",
+   "mobile": null
+  }
+ },
+ "VW Bus T5 / T6": {
+  "t5_transporter": {
+   "name": "VW T5 Transporter",
+   "mobile": [
+    25200,
+    "t5 transporter"
+   ]
+  },
+  "t5_multivan": {
+   "name": "VW T5 Multivan",
+   "mobile": [
+    25200,
+    "t5 multivan"
+   ]
+  },
+  "t6_transporter": {
+   "name": "VW T6 Transporter",
+   "mobile": [
+    25200,
+    "t6 transporter"
+   ]
+  },
+  "t6_multivan": {
+   "name": "VW T6 Multivan",
+   "mobile": [
+    25200,
+    "t6 multivan"
+   ]
+  },
+  "t6_caravelle": {
+   "name": "VW T6 Caravelle",
+   "mobile": [
+    25200,
+    "t6 caravelle"
+   ]
+  },
+  "t6_california": {
+   "name": "VW T6 California",
+   "mobile": [
+    25200,
+    "t6 california"
+   ]
+  },
+  "t61_transporter": {
+   "name": "VW T6.1 Transporter",
+   "mobile": [
+    25200,
+    "t6.1 transporter"
+   ]
+  },
+  "t61_multivan": {
+   "name": "VW T6.1 Multivan",
+   "mobile": [
+    25200,
+    "t6.1 multivan"
+   ]
+  }
+ },
+ "Transporter / Kleinbus (Alternativen zum T6)": {
+  "transit_custom": {
+   "name": "Ford Transit Custom",
+   "mobile": [
+    9000,
+    "transit custom"
+   ]
+  },
+  "tourneo_custom": {
+   "name": "Ford Tourneo Custom",
+   "mobile": [
+    9000,
+    "tourneo custom"
+   ]
+  },
+  "vito": {
+   "name": "Mercedes Vito",
+   "mobile": [
+    17200,
+    "vito"
+   ]
+  },
+  "v_klasse": {
+   "name": "Mercedes V-Klasse",
+   "mobile": [
+    17200,
+    "v-klasse"
+   ]
+  },
+  "trafic": {
+   "name": "Renault Trafic",
+   "mobile": [
+    20700,
+    "trafic"
+   ]
+  },
+  "vivaro": {
+   "name": "Opel Vivaro",
+   "mobile": [
+    19000,
+    "vivaro"
+   ]
+  }
+ },
+ "Kompaktvan": {
+  "touran": {
+   "name": "VW Touran",
+   "mobile": [
+    25200,
+    "touran"
+   ]
+  }
+ }
+}
